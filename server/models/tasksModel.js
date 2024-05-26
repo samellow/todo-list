@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const taskSchema = new mongoose.Schema({
     description: {
         type: String,
-        required: true
+        required: [true, 'Please add a title']
     },
     completed: {
         type: Boolean,
@@ -15,15 +15,15 @@ const taskSchema = new mongoose.Schema({
     },
     dueDate: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
     priority: {
         type: String,
-        required: true
+        required: [true, 'Please set priority']
     },
     category: {
         type: String,
-        required: true
+        required: [true, 'Please set category' ]
     },
     notes: {
         type: String,
