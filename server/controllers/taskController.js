@@ -24,7 +24,18 @@ const getTasks = async(req,res) => {
     }
 }
 
-const updateTask = async(req,res) => {}
+const updateTask = async(req,res) => {
+    try {
+            const id = req.params.id
+            const { description, dueDate, priority, category, notes} = req.body
+            await Task.findByIdAndUpdate(id, {description, dueDate, priority, category, notes})
+            const updatedTask = await Task.findById(id)
+            res.status(200).json(updatedTask)
+        } catch (error) {
+            const errors = handleTaskErrors(error)
+            res.status(400).json({errors})
+        }
+}
 
 const deleteTask = async(req,res) => {
     try {
