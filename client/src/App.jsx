@@ -4,6 +4,7 @@ import { Routes, Route} from 'react-router-dom'
 import Signup from './features/user/Signup'
 import Login from './features/user/Login'
 import { Toaster } from'react-hot-toast'
+import Task from './pages/Task'
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Route path='/' element = {<Home></Home>}></Route>
       <Route path='/signup' element = { <Signup/> }></Route>
       <Route path='/login' element = { <Login/> }></Route>
+      <Route path='/tasks' element={<Task/>}></Route>
     </Routes>
       
 
