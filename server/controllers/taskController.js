@@ -4,7 +4,10 @@ const handleTaskErrors = require("../utils/handleTaskErrors")
 const createTask = async(req,res)  => {
     try {
         const { description, dueDate, priority, category, notes} = req.body
-        const task = await Task.create({description, dueDate, priority, category, notes})
+
+        const userId = req.user._id
+
+        const task = await Task.create({description, dueDate, priority, category, notes, user: userId})
         res.status(200).json(task)
     } catch (error) {
         const errors = handleTaskErrors(error)
@@ -23,6 +26,7 @@ const getTasks = async(req,res) => {
        const errors = handleTaskErrors(error)
     }
 }
+
 
 const updateTask = async(req,res) => {
     try {

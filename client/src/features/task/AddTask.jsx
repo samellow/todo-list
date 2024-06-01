@@ -3,13 +3,15 @@ import { IoMdAdd } from "react-icons/io";
 import DatePicker from 'react-date-picker'
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-datePicker/dist/react-Datepicker.css';
+import toast from 'react-hot-toast';
 
 import 'react-calendar/dist/Calendar.css';
-import { useDispatch } from 'react-redux';
-import { createTask } from './taskSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearErrors, createTask, selectTaskError } from './taskSlice';
 
 const AddTask = () => {
   const dispatch = useDispatch()
+  const errors = useSelector(selectTaskError)
   const [modal, setModal] = useState(false)
   const [description, setDescription] = useState('')
   const [dueDate, setDueDate] = useState(null)
@@ -31,13 +33,39 @@ const AddTask = () => {
   }
 
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    dispatch(createTask({description, dueDate, priority, category, notes}))
+    try {
+        const resultAction = await dispatch(createTask({ description, dueDate, priority, category, notes })).unwrap()
+        
+        if (resultAction) {
+            toast.success('Task added successfully');
 
-    toggleModal()
-  }
+            
+            setDescription('');
+            setDueDate(null);
+            setPriority('');
+            setCategory('');
+            setNotes('');
+
+            
+            toggleModal();
+        }
+    } catch (errors) {
+        if (errors) {
+            Object.entries(errors).forEach(([key, value]) => {
+                if (value) {
+                    toast.error(value);
+                }
+            });
+        } else {
+            toast.error('An unknown error occurred');
+        }
+    }
+};
+
+  console.log(errors)
 
   return (
     <section className="addTask">
@@ -60,7 +88,9 @@ const AddTask = () => {
                     placeholder="Task Description"
                     className='task-input' 
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={(e) => {
+                      dispatch((clearErrors()))
+                      setDescription(e.target.value)}}
                     />
                     <div className="due-date">
                       <label>Due Date</label>
@@ -79,7 +109,9 @@ const AddTask = () => {
                       <label htmlFor="">Priority</label>
                       <select 
                         value={priority}
-                        onChange={(e)=> setPriority(e.target.value)}
+                        onChange={(e)=> {
+                          dispatch(clearErrors())
+                          setPriority(e.target.value)}}
                       >
                         <option value="">Set priority</option>
                         <option value="low">low</option>
@@ -91,7 +123,9 @@ const AddTask = () => {
                       <label htmlFor="">Category</label>
                       <select 
                        value={category}
-                       onChange={(e) => setCategory(e.target.value)}
+                       onChange={(e) => {
+                        dispatch(clearErrors())
+                        setCategory(e.target.value)}}
                       >
                         <option value="">Set category</option>
                         <option value="work">work</option>

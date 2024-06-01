@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 
 const taskSchema = new mongoose.Schema({
+
+
     description: {
         type: String,
         required: [true, 'Please add a title']
@@ -27,6 +29,11 @@ const taskSchema = new mongoose.Schema({
     },
     notes: {
         type: String,
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 
 }, {timestamps: true})
